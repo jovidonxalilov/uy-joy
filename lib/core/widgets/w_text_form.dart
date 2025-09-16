@@ -11,7 +11,6 @@ import 'app_text.dart';
 
 class CustomTextField extends StatelessWidget {
   final String hintText;
-  final String labelText;
   final TextEditingController? controller;
   final String? Function(String?)? validator;
   final TextInputType? keyboardType;
@@ -24,7 +23,6 @@ class CustomTextField extends StatelessWidget {
   const CustomTextField({
     Key? key,
     required this.hintText,
-    required this.labelText,
     this.controller,
     this.validator,
     this.keyboardType,
@@ -45,59 +43,58 @@ class CustomTextField extends StatelessWidget {
       onTap: onTap,
       readOnly: readOnly,
       decoration: InputDecoration(
-        label: AppText(text: "name").paddingOnly(top: 20), // Label sifatida ishlatish
-        labelStyle: TextStyle(
-          color: Colors.grey[600],
-          fontSize: 16,
-          fontWeight: FontWeight.w400,
-        ),
-        floatingLabelStyle: TextStyle(
-          color: Colors.purple,
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-        ),
+        // label: AppText(text: "name").paddingOnly(top: 20),
+        // labelStyle: TextStyle(
+        //   color: Colors.grey[600],
+        //   fontSize: 16,
+        //   fontWeight: FontWeight.w400,
+        // ),
+        // floatingLabelStyle: TextStyle(
+        //   color: Colors.purple,
+        //   fontSize: 14,
+        //   fontWeight: FontWeight.w500,
+        // ),
         floatingLabelBehavior: FloatingLabelBehavior.auto,
         filled: true,
-        fillColor: Colors.grey[50],
-        contentPadding: EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 16,
-        ),
+        fillColor: AppColors.bg,
+        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+
+        // contentPadding:
+        //     const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        hintText: hintText,
+        hintStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
         suffixIcon: suffixIcon,
         prefixIcon: prefixIcon,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(
-            color: Colors.purple,
-            width: 2,
-          ),
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: AppColors.bgLight, width: 2),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(
-            color: Colors.purple,
-            width: 2,
+            color: AppColors.bgLight,
+            // width: 1.4,
           ),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(
-            color: Colors.purple,
-            width: 2,
+            color: AppColors.bgLight,
+            // width: 2,
           ),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(
             color: Colors.red,
-            width: 2,
+            // width: 2,
           ),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(
             color: Colors.red,
-            width: 2,
+            // width: 2,
           ),
         ),
       ),
@@ -135,6 +132,7 @@ class WTextField extends StatefulWidget {
   final TextStyle? textStyle;
   final TextStyle? hintStyle;
   final bool autoPrefix998;
+  final Widget? suffixIconWidget;
   final String? text;
   final String? suffixImage;
   final bool richText;
@@ -159,6 +157,7 @@ class WTextField extends StatefulWidget {
     this.prefixIconOnePath,
     this.prefixIconTwoPath,
     this.controller,
+    this.suffixIconWidget,
     this.keyboardType,
     this.textInputAction = TextInputAction.done,
     this.isObscureText = false,
@@ -264,7 +263,7 @@ class _WTextFieldState extends State<WTextField> {
     final borderColor = widget.hasError
         ? Theme.of(context).colorScheme.error
         : isFocused
-        ? (widget.borderColor ?? AppColors.base)
+        ? (widget.borderColor ?? AppColors.bg)
         : AppColors.bg;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -370,18 +369,20 @@ class _WTextFieldState extends State<WTextField> {
                       ),
                     ],
                   )
-                : (widget.suffixImage != null
-                      ? Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            SizedBox(width: 15.w),
-                            AppImage(
-                              path: widget.suffixImage!,
-                              onTap: widget.suffixImageTap,
-                            ),
-                          ],
-                        )
-                      : null),
+                : (widget.suffixIconWidget != null
+                      ? widget.suffixIconWidget!
+                      : (widget.suffixImage != null
+                            ? Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  SizedBox(width: 15.w),
+                                  AppImage(
+                                    path: widget.suffixImage!,
+                                    onTap: widget.suffixImageTap,
+                                  ),
+                                ],
+                              )
+                            : null)),
             counterText: '',
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(widget.borderRadius),

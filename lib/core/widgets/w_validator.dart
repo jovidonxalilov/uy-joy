@@ -244,4 +244,35 @@ class SimpleValidators {
     if (v.length < 6) return 'Parol 6 ta belgidan kam bo‘lmasin';
     return null;
   }
+
+  static String? validateText(String? value, {int minLength = 50}) {
+    final v = value?.trim() ?? '';
+    if (v.isEmpty) return 'Matnni kiriting';
+
+    // Faqat harflar bo‘lishini tekshirish (lotin yoki kirill)
+    final regex = RegExp(r'^[a-zA-Zа-яА-ЯёЁ\s]+$');
+    if (!regex.hasMatch(v)) {
+      return 'Faqat harflar va bo‘sh joylarga ruxsat beriladi';
+    }
+
+    if (v.length < minLength) {
+      return 'Matn kamida $minLength ta harf bo‘lishi kerak';
+    }
+
+    return null;
+  }
+
+
+  static String? numberInRange(String? value, {int min = 0, int max = 100}) {
+    final v = value?.trim() ?? '';
+    if (v.isEmpty) return 'Raqam kiriting';
+    if (int.tryParse(v) == null) return 'Faqat raqam kiriting';
+    final number = int.parse(v);
+    if (number < min || number > max) {
+      return 'Raqam $min dan katta va $max dan kichik bo‘lishi kerak';
+    }
+    return null;
+  }
+
+
 }

@@ -31,9 +31,10 @@ class WBottomNavigationBar extends StatelessWidget {
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
+        // spacing: 40,
         children: [
           BottomNavigationIconButton(
-          callback: () {onTap(0);},
+            callback: () {onTap(0);},
             svg: AppAssets.home,
             iconColor: selectedIndex == 0 ? AppColors.base : AppColors.botttomIcon,
             title: "Home",
@@ -57,7 +58,7 @@ class WBottomNavigationBar extends StatelessWidget {
             callback: () {onTap(3);},
             svg: AppAssets.chat,
             iconColor: selectedIndex == 3 ? AppColors.base : AppColors.botttomIcon,
-            title: "Message",
+            title: "Chat",
             titleColor: selectedIndex == 3 ? AppColors.base : AppColors.light,
           ),
           BottomNavigationIconButton(
@@ -68,7 +69,7 @@ class WBottomNavigationBar extends StatelessWidget {
             titleColor: selectedIndex == 4 ? AppColors.base : AppColors.light,
           ),
         ],
-      ).paddingOnly(top: 6, left: 22, right: 22, bottom: 8),
+      ).paddingOnly(top: 4, left: 22, right: 22, bottom: 0),
     );
   }
 }

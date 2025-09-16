@@ -14,102 +14,9 @@ import 'package:uyjoy/core/widgets/w__container.dart';
 import 'package:uyjoy/core/widgets/w_custom_app_bar.dart';
 import 'package:uyjoy/features/home/domain/usecase/home_usecase.dart';
 import 'package:uyjoy/features/home/presentation/bloc/home_bloc.dart';
+
 import '../../data/model/property_model.dart';
 import '../bloc/home_state.dart';
-
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
-
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  final ValueNotifier<String?> propertyController = ValueNotifier<String?>(
-    null,
-  );
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.white,
-      appBar: WCustomAppBar(
-        title: AppText(
-          text: "Housell",
-          fontSize: 32,
-          fontWeight: 700,
-          color: AppColors.blackT,
-        ),
-        actions: [
-          // Spacer(),
-          AppImage(path: AppAssets.notification),
-        ],
-        centerTitle: false,
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(height: 12.h),
-          Container(
-            width: double.infinity,
-            height: 36.h,
-            decoration: BoxDecoration(
-              color: AppColors.bg,
-              boxShadow: [
-                // BoxShadow(
-                //   color: const Color(0xFF141414).withOpacity(0.08),
-                //   offset: const Offset(0, 0),
-                //   blurRadius: 8,
-                //   spreadRadius: 0,
-                // ),
-                // BoxShadow(
-                //   color: const Color(0xFF141414).withOpacity(0.04),
-                //   offset: const Offset(0, 0),
-                //   blurRadius: 1,
-                //   spreadRadius: 0,
-                // ),
-              ],
-              borderRadius: BorderRadius.circular(12), // radius bo‘lsa
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                AppImage(path: AppAssets.search),
-                SizedBox(width: 12.w),
-                AppText(
-                  text: "Search Properties",
-                  fontSize: 14,
-                  fontWeight: 400,
-                ),
-              ],
-            ).paddingOnly(left: 8),
-          ),
-          SizedBox(height: 16.h),
-          Row(
-            children: [
-              CustomDropdown(
-                width: 275.w,
-                hintText: "Property",
-                options: ["Popular", "Vip"],
-                controller: propertyController,
-              ),
-              ContainerW(
-                color: AppColors.bg,
-                radius: 8,
-                width: 40.w,
-                height: 40.h,
-
-                child: AppText(text: "text"),
-              ),
-            ],
-          ),
-          SizedBox(height: 19.h),
-          AppText(text: "All Properties", fontWeight: 500, fontSize: 20),
-        ],
-      ).paddingOnly(top: 0, left: 24, right: 24),
-    );
-  }
-}
 
 class PropertyGridScreen extends StatefulWidget {
   const PropertyGridScreen({super.key});
@@ -123,59 +30,28 @@ class _PropertyGridScreenState extends State<PropertyGridScreen> {
     null,
   );
   ViewMode selectedViewMode = ViewMode.box;
+  String _getCurrentViewIcon() {
+    switch (selectedViewMode) {
+      case ViewMode.list:
+        return AppAssets.list;
+      case ViewMode.box:
+        return AppAssets.grid;
+      case ViewMode.gallery:
+        return AppAssets.gallery;
+    }
+  }
 
-  // Sample data
-  final List<PropertyModell> properties = [
-    PropertyModell(
-      id: 1,
-      title: "Modern Downtown Apartment",
-      price: "\$1800",
-      location: "Tashkent Yunusobod Rayon",
-      bedrooms: 3,
-      downloads: 105,
-      imageUrl:
-          "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400",
-      isVip: true,
-    ),
-    PropertyModell(
-      id: 2,
-      title: "Modern Downtown House",
-      price: "\$1800",
-      location: "Tashkent Yunusobod Rayon",
-      bedrooms: 3,
-      downloads: 105,
-      imageUrl:
-          "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400",
-      isVip: false,
-    ),
-    PropertyModell(
-      id: 3,
-      title: "Luxury Villa",
-      price: "\$2500",
-      location: "Tashkent Chilonzor Rayon",
-      bedrooms: 4,
-      downloads: 89,
-      imageUrl:
-          "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=400",
-      isVip: false,
-    ),
-    PropertyModell(
-      id: 4,
-      title: "Cozy Studio",
-      price: "\$900",
-      location: "Tashkent Mirzo Ulugbek Rayon",
-      bedrooms: 1,
-      downloads: 67,
-      imageUrl:
-          "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400",
-      isVip: true,
-    ),
-  ];
+  void _changeViewMode(ViewMode newMode) {
+    setState(() {
+      selectedViewMode = newMode;
+    });
+    Navigator.pop(context);
+  }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>  HomeBloc(getIt<HomeGetHousesUsecase>()),
+      create: (context) => HomeBloc(getIt<HomeGetHousesUsecase>()),
       child: Scaffold(
         backgroundColor: AppColors.white,
         appBar: WCustomAppBar(
@@ -185,19 +61,24 @@ class _PropertyGridScreenState extends State<PropertyGridScreen> {
             fontWeight: 700,
             color: AppColors.blackT,
           ),
-          actions: [
-            AppImage(path: AppAssets.notification),
-          ],
+          actions: [AppImage(path: AppAssets.notification)],
           centerTitle: false,
         ),
         body: SingleChildScrollView(
           child: BlocBuilder<HomeBloc, HomeState>(
             builder: (context, state) {
               if (state.mainStatus == MainStatus.loading) {
-                return Center(child: CircularProgressIndicator(),);
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(height: 150.h),
+                    Center(child: CircularProgressIndicator()),
+                  ],
+                );
               }
               if (state.mainStatus == MainStatus.failure) {
-                return Center(child: AppText(text: "Malumot kelmadi"),);
+                return Center(child: AppText(text: "Malumot kelmadi"));
               }
               // state.propertyModel!.data[3].floor;
               if (state.mainStatus == MainStatus.succes) {
@@ -228,7 +109,7 @@ class _PropertyGridScreenState extends State<PropertyGridScreen> {
                               ),
                             ],
                           ).paddingOnly(left: 8),
-                        ),
+                        ).paddingOnly(top: 0, left: 16, right: 16),
                         SizedBox(height: 16.h),
                         Row(
                           children: [
@@ -245,24 +126,35 @@ class _PropertyGridScreenState extends State<PropertyGridScreen> {
                               radius: 8,
                               width: 40.w,
                               height: 40.h,
-                              child: Icon(
-                                Icons.tune,
-                                size: 20,
-                                color: AppColors.blackT,
+                              child: Center(
+                                child: AppImage(path: AppAssets.filter),
                               ),
                             ),
                           ],
-                        ),
-
+                        ).paddingOnly(top: 0, left: 16, right: 16),
+                        SizedBox(height: 19.h),
+                        AppText(
+                          text: "VIP Properties",
+                          fontWeight: 500,
+                          fontSize: 20,
+                        ).paddingOnly(top: 0, left: 16, right: 16),
+                        SizedBox(height: 15.h),
+                        // Row(
+                        //   children: [
+                        _buildVipPropertyView(
+                          property,
+                        ).paddingOnly(top: 0, left: 16),
+                        //   ],
+                        // ),
                         SizedBox(height: 19.h),
                         Row(
                           children: [
                             Expanded(
-                                child: AppText(
-                                    text: "All Properties",
-                                    fontWeight: 500,
-                                    fontSize: 20
-                                )
+                              child: AppText(
+                                text: "All Properties",
+                                fontWeight: 500,
+                                fontSize: 20,
+                              ),
                             ),
                             GestureDetector(
                               onTap: () {
@@ -278,36 +170,39 @@ class _PropertyGridScreenState extends State<PropertyGridScreen> {
                                     return Container(
                                       width: double.infinity,
                                       height: 270.h,
-                                      decoration: const BoxDecoration(
+                                      decoration: BoxDecoration(
                                         color: AppColors.white,
                                         borderRadius: BorderRadius.vertical(
                                           top: Radius.circular(20),
                                         ),
                                       ),
                                       child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
                                         children: [
-                                          Container(
-                                            width: 40.w,
-                                            height: 4.h,
-                                            margin: EdgeInsets.only(top: 12.h, bottom: 20.h),
-                                            decoration: BoxDecoration(
-                                              color: AppColors.white,
-                                              borderRadius: BorderRadius.circular(2),
-                                            ),
+                                          SizedBox(height: 8.h),
+                                          Divider(
+                                            thickness: 4,
+                                            indent: 162,
+                                            radius: BorderRadius.circular(5),
+                                            endIndent: 162,
                                           ),
+                                          SizedBox(height: 35.h),
                                           _buildViewModeButton(
                                             ViewMode.list,
-                                            Icons.list,
+                                            AppAssets.list,
                                             'List',
                                           ),
+                                          SizedBox(height: 22.h),
                                           _buildViewModeButton(
                                             ViewMode.box,
-                                            Icons.apps,
+                                            AppAssets.grid,
                                             'Box',
                                           ),
+                                          SizedBox(height: 22.h),
                                           _buildViewModeButton(
                                             ViewMode.gallery,
-                                            Icons.photo_library_outlined,
+                                            AppAssets.gallery,
                                             'Gallery',
                                           ),
                                         ],
@@ -316,17 +211,17 @@ class _PropertyGridScreenState extends State<PropertyGridScreen> {
                                   },
                                 );
                               },
-                              child: AppImage(path: AppAssets.grid),
+                              child: AppImage(path: _getCurrentViewIcon()),
                             ),
                           ],
-                        ),
+                        ).paddingOnly(top: 0, left: 16, right: 16),
                       ],
-                    ).paddingOnly(top: 0, left: 16, right: 16),
+                    ),
                     _buildContent(property),
                   ],
                 );
               }
-             return AppText(text: "Malumot topilmadi");
+              return AppText(text: "Malumot topilmadi");
             },
           ),
         ),
@@ -339,25 +234,25 @@ class _PropertyGridScreenState extends State<PropertyGridScreen> {
       case ViewMode.list:
         return _buildListView(propertyModel);
       case ViewMode.box:
-        return _buildGridView();
+        return _buildGridView(propertyModel);
       case ViewMode.gallery:
-        return _buildGalleryView();
+        return _buildGalleryView(propertyModel);
     }
   }
 
-  Widget _buildGridView() {
+  Widget _buildGridView(PropertyModel propertyModel) {
     return GridView.builder(
       shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+      physics: NeverScrollableScrollPhysics(),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        childAspectRatio: 0.65,
+        childAspectRatio: 0.64,
         crossAxisSpacing: 12,
         mainAxisSpacing: 16,
       ),
-      itemCount: properties.length,
+      itemCount: propertyModel.data.length,
       itemBuilder: (context, index) {
-        final property = properties[index];
+        final property = propertyModel.data[index];
         return _buildPropertyCard(property);
       },
     ).paddingOnly(top: 15, left: 16, right: 16, bottom: 20);
@@ -375,24 +270,45 @@ class _PropertyGridScreenState extends State<PropertyGridScreen> {
     ).paddingOnly(top: 15, left: 16, right: 16, bottom: 20);
   }
 
-  Widget _buildGalleryView() {
+  Widget _buildGalleryView(PropertyModel propertyModel) {
     return GridView.builder(
-      shrinkWrap: true, // Bu muhim!
-      physics: const NeverScrollableScrollPhysics(), // Bu ham muhim!
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 1,
         childAspectRatio: 1.2,
         mainAxisSpacing: 16,
       ),
-      itemCount: properties.length,
+      itemCount: propertyModel.data.length,
       itemBuilder: (context, index) {
-        final property = properties[index];
+        final property = propertyModel.data[index];
         return _buildGalleryCard(property);
       },
     ).paddingOnly(top: 15, left: 16, right: 16, bottom: 20);
   }
 
-  Widget _buildPropertyCard(PropertyModell property) {
+  Widget _buildVipPropertyView(PropertyModel propertyModel) {
+    final vipProperties = propertyModel.data
+        .where((property) => property.isVip)
+        .toList();
+    return SizedBox(
+      height: 266.h,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: vipProperties.length,
+        itemBuilder: (context, index) {
+          final property = vipProperties[index];
+          return Container(
+            width: 250.w,
+            margin: EdgeInsets.only(right: 12.w),
+            child: _buildVipProperty(property),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildPropertyCard(Datum property) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
@@ -415,11 +331,11 @@ class _PropertyGridScreenState extends State<PropertyGridScreen> {
                   top: Radius.circular(12),
                 ),
                 child: Container(
-                  width: double.infinity,
+                  width: double.infinity.w,
                   height: 123.h,
                   color: Colors.grey[300],
                   child: Image.network(
-                    property.imageUrl,
+                    property.photos[1].photo,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
                       return Container(
@@ -435,16 +351,13 @@ class _PropertyGridScreenState extends State<PropertyGridScreen> {
                   top: 8,
                   left: 8,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
-                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
                       color: Colors.purple,
                       borderRadius: BorderRadius.circular(4),
                     ),
-                    child: Text(
-                      'VIP',
+                    child: AppText(
+                      text: 'VIP',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 10,
@@ -455,7 +368,6 @@ class _PropertyGridScreenState extends State<PropertyGridScreen> {
                 ),
             ],
           ),
-          // Details
           Expanded(
             flex: 2,
             child: Padding(
@@ -477,23 +389,23 @@ class _PropertyGridScreenState extends State<PropertyGridScreen> {
                           textAlign: TextAlign.start,
                         ),
                       ),
-                      AppImage(path: AppAssets.hearth)
+                      AppImage(path: AppAssets.hearth),
                     ],
                   ),
                   SizedBox(height: 4.h),
                   AppText(
-                    text: property.price,
+                    text: property.price.toString(),
                     fontWeight: 800,
                     fontSize: 16,
                   ),
-                  SizedBox(height: 6.h,),
+                  SizedBox(height: 6.h),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // AppImage(path: AppAssets.map, size: 14,),
                       Expanded(
                         child: AppText(
-                           text: property.location,
+                          text: property.location,
                           fontSize: 12,
                           fontWeight: 400,
                           maxLines: 2,
@@ -510,7 +422,7 @@ class _PropertyGridScreenState extends State<PropertyGridScreen> {
                       AppImage(path: AppAssets.bedroom),
                       SizedBox(width: 8.w),
                       AppText(
-                        text: '${property.bedrooms}',
+                        text: '${property.numberOfBathrooms}',
                         fontWeight: 400,
                         fontSize: 12,
                         color: AppColors.base,
@@ -519,7 +431,7 @@ class _PropertyGridScreenState extends State<PropertyGridScreen> {
                       AppImage(path: AppAssets.sqft),
                       SizedBox(width: 8.w),
                       AppText(
-                        text: '${property.downloads}',
+                        text: '${property.numberOfRooms}',
                         fontWeight: 400,
                         fontSize: 12,
                         color: AppColors.base,
@@ -538,7 +450,7 @@ class _PropertyGridScreenState extends State<PropertyGridScreen> {
   Widget _buildListItem(Datum property) {
     return Container(
       height: 157.h,
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         color: AppColors.bg,
@@ -553,120 +465,110 @@ class _PropertyGridScreenState extends State<PropertyGridScreen> {
       child: Row(
         children: [
           ClipRRect(
-            borderRadius: const BorderRadius.horizontal(
-              left: Radius.circular(12),
-            ),
-            child: Container(
-              width: 118.w,
-              height: double.infinity.h,
-              color: Colors.grey[300],
-              child: Image.network(
-                property.photos[1].photo,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(
-                    color: Colors.grey[300],
-                    child: const Icon(Icons.image, color: Colors.grey),
-                  );
-                },
-              ),
-            ),
-          ),
-          // Details
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      if (property.isVip) ...[
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 6,
-                            vertical: 2,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.purple,
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: const Text(
-                            'VIP',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 8,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                      ],
-                      Expanded(
-                        child: Text(
-                          property.title,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      const Icon(
-                        Icons.favorite_border,
-                        size: 16,
-                        color: Colors.grey,
-                      ),
-                    ],
+            borderRadius: BorderRadius.horizontal(left: Radius.circular(8)),
+            child: Stack(
+              children: [
+                Container(
+                  width: 118.w,
+                  height: double.infinity.h,
+                  color: Colors.grey[300],
+                  child: Image.network(
+                    property.photos[1].photo,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        color: Colors.grey[300],
+                        child: const Icon(Icons.image, color: Colors.grey),
+                      );
+                    },
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    property.price.toString(),
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+                ),
+                if (property.isVip)
+                  Positioned(
+                    top: 5,
+                    left: 5,
+                    child: ContainerW(
+                      width: 40.w,
+                      height: 23.h,
+                      color: AppColors.base,
+                      radius: 4,
+                      child: Center(
+                        child: AppText(
+                          text: 'VIP',
+                          fontSize: 12,
+                          fontWeight: 500,
+                          color: AppColors.white,
+                        ),
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    property.location,
-                    style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Icon(Icons.abc, size: 14, color: Colors.purple[300]),
-                      const SizedBox(width: 4),
-                      Text(
-                        '${property.numberOfBathrooms}',
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.purple,
-                        ),//
-                      ),
-                      const SizedBox(width: 12),
-                      Icon(Icons.download, size: 14, color: Colors.purple[300]),
-                      const SizedBox(width: 4),
-                      Text(
-                        '${property.area}',
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.purple,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+              ],
             ),
+          ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: AppText(
+                        text: property.title,
+                        fontSize: 16,
+                        fontWeight: 400,
+
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    AppImage(path: AppAssets.hearth, size: 24),
+                  ],
+                ).paddingOnly(right: 4),
+                SizedBox(height: 4.h),
+                AppText(
+                  text: property.price.toString(),
+                  fontSize: 18,
+                  fontWeight: 700,
+                ),
+                SizedBox(height: 4.h),
+                AppText(
+                  text: property.location,
+                  fontSize: 12,
+                  fontWeight: 400,
+                  style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                ),
+                SizedBox(height: 24.h),
+                Row(
+                  children: [
+                    AppImage(path: AppAssets.bedroom),
+                    SizedBox(width: 8.h),
+                    AppText(
+                      text: property.numberOfBathrooms.toString(),
+                      fontSize: 12,
+                      fontWeight: 400,
+                      color: AppColors.base,
+                    ),
+                    SizedBox(width: 16.w),
+                    AppImage(path: AppAssets.sqft),
+                    SizedBox(width: 8.w),
+                    AppText(
+                      text: '${property.area.toString()} m²',
+                      fontSize: 12,
+                      fontWeight: 400,
+                      color: AppColors.base,
+                    ),
+                  ],
+                ),
+              ],
+            ).paddingAll(12),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildGalleryCard(PropertyModell property) {
+  Widget _buildGalleryCard(Datum property) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
@@ -681,7 +583,6 @@ class _PropertyGridScreenState extends State<PropertyGridScreen> {
       ),
       child: Column(
         children: [
-          // Large Image
           Expanded(
             flex: 3,
             child: Stack(
@@ -692,14 +593,17 @@ class _PropertyGridScreenState extends State<PropertyGridScreen> {
                   ),
                   child: Container(
                     width: double.infinity,
+                    height: 196.h,
                     color: Colors.grey[300],
                     child: Image.network(
-                      property.imageUrl,
+                      property.photos[1].photo,
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
                         return Container(
                           color: Colors.grey[300],
-                          child: const Icon(
+                          width: double.infinity,
+                          height: 196.h,
+                          child: Icon(
                             Icons.image,
                             color: Colors.grey,
                             size: 40,
@@ -713,163 +617,261 @@ class _PropertyGridScreenState extends State<PropertyGridScreen> {
                   Positioned(
                     top: 12,
                     left: 12,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.purple,
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: const Text(
-                        'VIP',
-                        style: TextStyle(
-                          color: Colors.white,
+                    child: ContainerW(
+                      width: 40.w,
+                      height: 23.h,
+                      color: AppColors.base,
+                      radius: 4,
+                      child: Center(
+                        child: AppText(
+                          text: 'VIP',
                           fontSize: 12,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: 500,
+                          color: AppColors.white,
                         ),
                       ),
                     ),
                   ),
-                Positioned(
-                  top: 12,
-                  right: 12,
-                  child: Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.9),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.favorite_border,
-                      size: 20,
-                      color: Colors.grey,
-                    ),
-                  ),
-                ),
               ],
             ),
           ),
           // Details
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  property.title,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  property.price,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  property.location,
-                  style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    Icon(Icons.bed, size: 16, color: Colors.purple[300]),
-                    const SizedBox(width: 4),
-                    Text(
-                      '${property.bedrooms}',
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: Colors.purple,
-                      ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: AppText(
+                      text: property.title,
+                      fontWeight: 400,
+                      fontSize: 16,
                     ),
-                    const SizedBox(width: 16),
-                    Icon(Icons.download, size: 16, color: Colors.purple[300]),
-                    const SizedBox(width: 4),
-                    Text(
-                      '${property.downloads}',
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: Colors.purple,
-                      ),
-                    ),
-                  ],
+                  ),
+                  AppImage(path: AppAssets.hearth, size: 24),
+                ],
+              ),
+              SizedBox(height: 9.h),
+              AppText(
+                text: "\$${property.price}",
+                fontSize: 16,
+                fontWeight: 800,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
                 ),
-              ],
-            ),
-          ),
+              ),
+              SizedBox(height: 4.h),
+              AppText(
+                text: property.location,
+                fontSize: 12,
+                fontWeight: 400,
+                color: AppColors.textMuted,
+              ),
+              SizedBox(height: 4.h),
+              Row(
+                children: [
+                  AppImage(path: AppAssets.bedroom),
+                  SizedBox(width: 8.w),
+                  AppText(
+                    text: property.numberOfBathrooms.toString(),
+                    fontWeight: 400,
+                    fontSize: 12,
+                  ),
+                  SizedBox(width: 16.w),
+                  AppImage(path: AppAssets.sqft),
+                  SizedBox(width: 8.w),
+                  AppText(
+                    text: property.numberOfRooms,
+                    fontWeight: 400,
+                    fontSize: 12,
+                  ),
+                ],
+              ),
+            ],
+          ).paddingOnly(top: 18, left: 14, right: 14, bottom: 18),
         ],
       ),
     );
   }
 
-  Widget _buildViewModeButton(ViewMode mode, IconData icon, String label) {
-    final isSelected = selectedViewMode == mode;
-    return Expanded(
-      child: GestureDetector(
-        onTap: () {
-          setState(() {
-            selectedViewMode = mode;
-          });
-          context.pop();
-        },
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          decoration: BoxDecoration(
-            color: isSelected ? Colors.purple[100] : Colors.transparent,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                icon,
-                color: isSelected ? Colors.purple : Colors.grey,
-                size: 20,
-              ),
-              const SizedBox(height: 4),
-              Text(
-                label,
-                style: TextStyle(
-                  color: isSelected ? Colors.purple : Colors.grey,
-                  fontSize: 12,
-                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                ),
-              ),
-            ],
-          ),
+  Widget _buildVipProperty(Datum property) {
+    if (property.isVip) {
+      return Container(
+        width: 180.w,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.08),
+              blurRadius: 8,
+              spreadRadius: 0,
+            ),
+          ],
         ),
+        child: Column(
+          children: [
+            Expanded(
+              flex: 3,
+              child: Stack(
+                children: [
+                  ClipRRect(
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(8),
+                      bottom: Radius.circular(8),
+                    ),
+                    child: Container(
+                      width: double.infinity,
+                      height: 140.h,
+                      color: Colors.grey[300],
+                      child: Image.network(
+                        property.photos[1].photo,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            color: Colors.grey[300],
+                            width: double.infinity,
+                            height: 140.h,
+                            child: Icon(
+                              Icons.image,
+                              color: Colors.grey,
+                              size: 40,
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  if (property.isVip)
+                    Positioned(
+                      top: 12,
+                      left: 12,
+                      child: ContainerW(
+                        width: 40.w,
+                        height: 23.h,
+                        color: AppColors.base,
+                        radius: 4,
+                        child: Center(
+                          child: AppText(
+                            text: 'VIP',
+                            fontSize: 12,
+                            fontWeight: 500,
+                            color: AppColors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            // Details
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: AppText(
+                        text: property.title,
+                        fontWeight: 400,
+                        fontSize: 16,
+                      ),
+                    ),
+                    // AppImage(path: AppAssets.hearth, size: 24),
+                  ],
+                ),
+                SizedBox(height: 9.h),
+                AppText(
+                  text: "\$${property.price}",
+                  fontSize: 18,
+                  fontWeight: 800,
+                  color: AppColors.base,
+                ),
+                SizedBox(height: 4.h),
+                Row(
+                  children: [
+                    AppImage(
+                      path: AppAssets.map,
+                      size: 14,
+                      color: AppColors.textMuted,
+                    ),
+                    SizedBox(width: 4.w),
+                    Expanded(
+                      child: AppText(
+                        text: property.location,
+                        fontSize: 14,
+                        color: AppColors.textMuted,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 4.h),
+                Row(
+                  children: [
+                    AppImage(path: AppAssets.bedroom),
+                    SizedBox(width: 8.w),
+                    AppText(
+                      text: property.numberOfBathrooms.toString(),
+                      fontWeight: 400,
+                      fontSize: 12,
+                    ),
+                    SizedBox(width: 16.w),
+                    AppImage(path: AppAssets.sqft),
+                    SizedBox(width: 8.w),
+                    AppText(
+                      text: property.numberOfRooms,
+                      fontWeight: 400,
+                      fontSize: 12,
+                    ),
+                  ],
+                ),
+              ],
+            ).paddingOnly(top: 18, left: 14, right: 14, bottom: 18),
+          ],
+        ),
+      );
+    }
+    return Center(child: AppText(text: "Vip Propertilar topilmadi"));
+  }
+
+  Widget _buildViewModeButton(ViewMode mode, String icon, String label) {
+    final isSelected = selectedViewMode == mode;
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          selectedViewMode = mode;
+        });
+        context.pop();
+      },
+      child: ContainerW(
+        width: 155.w,
+        height: 40.h,
+        color: isSelected ? AppColors.base.withOpacity(0.2) : AppColors.bg,
+        radius: 12,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          // mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            AppImage(
+              path: icon,
+              color: isSelected ? AppColors.base : AppColors.black,
+            ),
+            SizedBox(width: 24.w),
+            AppText(
+              color: isSelected ? AppColors.base : AppColors.black,
+
+              text: label,
+              fontSize: 20,
+              fontWeight: 400,
+            ),
+          ],
+        ).paddingOnly(left: 20),
       ),
     );
   }
 }
 
 enum ViewMode { list, box, gallery }
-
-class PropertyModell {
-  final int id;
-  final String title;
-  final String price;
-  final String location;
-  final int bedrooms;
-  final int downloads;
-  final String imageUrl;
-  final bool isVip;
-
-  PropertyModell({
-    required this.id,
-    required this.title,
-    required this.price,
-    required this.location,
-    required this.bedrooms,
-    required this.downloads,
-    required this.imageUrl,
-    required this.isVip,
-  });
-}

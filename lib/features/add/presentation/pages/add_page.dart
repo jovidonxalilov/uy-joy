@@ -8,6 +8,7 @@ import 'package:uyjoy/core/widgets/app_text.dart';
 import 'package:uyjoy/core/widgets/w__container.dart';
 import 'package:uyjoy/core/widgets/w_custom_app_bar.dart';
 import 'package:uyjoy/core/widgets/w_text_form.dart';
+import 'package:uyjoy/features/add/presentation/pages/new_property_deatil.dart';
 
 class AddPage extends StatefulWidget {
   @override
@@ -193,134 +194,104 @@ class _AddPageState extends State<AddPage> {
   final List<String> priceIcon = [AppAssets.housee, AppAssets.tag];
 
   Widget _buildStep1() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _isValidNotifier.value = selectPriceIndex != null;
+    });
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AppText(
-          text: "Property Details",
+          text: 'What type of listing is this?',
           fontSize: 20,
           fontWeight: 700,
-          color: AppColors.blackT,
         ),
         SizedBox(height: 24.h),
-        WTextField(
-          title: "Title",
-          richText: true,
-          hintText: "Enter Property Title",
-          borderRadius: 12,
-          fillColor: AppColors.bgLight,
-        ),
-        SizedBox(height: 24.h),
-        WTextField(
-          title: "Description",
-          richText: true,
-          hintText: "Enter Property Description",
-          borderRadius: 12,
-          maxLines: 3,
-          fillColor: AppColors.bgLight,
+        SingleChildScrollView(
+          child: GridView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 1,
+              // crossAxisSpacing: 24.0,
+              mainAxisSpacing: 16.0,
+              childAspectRatio: 2,
+            ),
+            itemCount: priceType.length,
+            itemBuilder: (context, index) {
+              return GestureDetector(
+                onTap: () {
+                  setState(() {
+                    selectPriceIndex = index;
+                  });
+                  _isValidNotifier.value = true;
+                },
+                child: ContainerW(
+                  color: selectPriceIndex == index
+                      ? AppColors.base.withOpacity(0.2)
+                      : AppColors.white,
+                  border: Border.all(
+                    color: selectPriceIndex == index
+                        ? Colors.transparent
+                        : AppColors.grey200,
+                    width: 1,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Color(0xFF141414).withOpacity(0.08),
+                      offset: Offset(0, 0),
+                      blurRadius: 8,
+                      spreadRadius: 0,
+                    ),
+                    BoxShadow(
+                      color: Color(0xFF141414).withOpacity(0.04),
+                      offset: Offset(0, 0),
+                      blurRadius: 1,
+                      spreadRadius: 0,
+                    ),
+                  ],
+                  radius: 8,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      AppImage(
+                        path: priceIcon[index],
+                        color: selectPriceIndex == index
+                            ? AppColors.base
+                            : AppColors.base,
+                      ),
+                      SizedBox(height: 12.h),
+                      AppText(
+                        color: selectPriceIndex == index
+                            ? AppColors.base
+                            : AppColors.blackT,
+                        text: priceType[index],
+                        fontWeight: 700,
+                        fontSize: 18,
+                      ),
+                      AppText(
+                        color: selectPriceIndex == index
+                            ? AppColors.base
+                            : AppColors.textLight,
+                        text: priceDescription[index],
+                        fontWeight: 400,
+                        fontSize: 14,
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
         ),
       ],
-    ).paddingOnly(left: 24, right: 24, top: 32);
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   _isValidNotifier.value = selectPriceIndex != null;
-    // });
-    //
-    // return Column(
-    //   crossAxisAlignment: CrossAxisAlignment.start,
-    //   children: [
-    //     AppText(
-    //       text: 'What type of listing is this?',
-    //       fontSize: 20,
-    //       fontWeight: 700,
-    //     ),
-    //     SizedBox(height: 24.h),
-    //     SingleChildScrollView(
-    //       child: GridView.builder(
-    //         shrinkWrap: true,
-    //         physics: NeverScrollableScrollPhysics(),
-    //         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-    //           crossAxisCount: 1,
-    //           // crossAxisSpacing: 24.0,
-    //           mainAxisSpacing: 16.0,
-    //           childAspectRatio: 2,
-    //         ),
-    //         itemCount: priceType.length,
-    //         itemBuilder: (context, index) {
-    //           return GestureDetector(
-    //             onTap: () {
-    //               setState(() {
-    //                 selectPriceIndex = index;
-    //               });
-    //               // Keyingi tugmasini faollashtirish
-    //               _isValidNotifier.value = true;
-    //             },
-    //             child: ContainerW(
-    //               // ... qolgan kod bir xil
-    //               color: selectPriceIndex == index
-    //                   ? AppColors.base.withOpacity(0.2)
-    //                   : AppColors.white,
-    //               border: Border.all(
-    //                 color: selectPriceIndex == index
-    //                     ? Colors.transparent
-    //                     : AppColors.grey200,
-    //                 width: 1,
-    //               ),
-    //               boxShadow: [
-    //                 BoxShadow(
-    //                   color: Color(0xFF141414).withOpacity(0.08),
-    //                   offset: Offset(0, 0),
-    //                   blurRadius: 8,
-    //                   spreadRadius: 0,
-    //                 ),
-    //                 BoxShadow(
-    //                   color: Color(0xFF141414).withOpacity(0.04),
-    //                   offset: Offset(0, 0),
-    //                   blurRadius: 1,
-    //                   spreadRadius: 0,
-    //                 ),
-    //               ],
-    //               radius: 8,
-    //               child: Column(
-    //                 crossAxisAlignment: CrossAxisAlignment.center,
-    //                 mainAxisAlignment: MainAxisAlignment.center,
-    //                 children: [
-    //                   AppImage(
-    //                     path: priceIcon[index],
-    //                     color: selectPriceIndex == index
-    //                         ? AppColors.base
-    //                         : AppColors.blackT,
-    //                   ),
-    //                   SizedBox(height: 12.h),
-    //                   AppText(
-    //                     color: selectPriceIndex == index
-    //                         ? AppColors.base
-    //                         : AppColors.blackT,
-    //                     text: priceType[index],
-    //                     fontWeight: 700,
-    //                     fontSize: 18,
-    //                   ),
-    //                   AppText(
-    //                     color: selectPriceIndex == index
-    //                         ? AppColors.base
-    //                         : AppColors.textLight,
-    //                     text: priceDescription[index],
-    //                     fontWeight: 400,
-    //                     fontSize: 14,
-    //                   ),
-    //                 ],
-    //               ),
-    //             ),
-    //           );
-    //         },
-    //       ),
-    //     ),
-    //   ],
-    // ).paddingOnly(
-    //   left: 24,
-    //   right: 24,
-    //   top: 48,
-    //   bottom: 24,
-    // );
+    ).paddingOnly(
+      left: 24,
+      right: 24,
+      top: 48,
+      bottom: 24,
+    );
   }
 
   final List<String> propertyType = [
@@ -337,7 +308,6 @@ class _AddPageState extends State<AddPage> {
   ];
 
   Widget _buildMenu2() {
-    // Validatsiya holatini tekshirish
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _isValidNotifier.value = selectPropertyTypeIndex != null;
     });
@@ -428,23 +398,7 @@ class _AddPageState extends State<AddPage> {
   }
 
   Widget _buildMenu3() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        AppText(
-          text: "Property Details",
-          fontSize: 20,
-          fontWeight: 700,
-          color: AppColors.blackT,
-        ),
-        SizedBox(height: 24.h),
-        WTextField(
-          title: "Property Title",
-          richText: true,
-          hintText: "Enter Property Title",
-        ),
-      ],
-    ).paddingOnly(left: 24, right: 24, top: 32);
+    return PropertyFormScreen().paddingOnly(left: 24, right: 24, top: 32);
   }
 
   Widget _buildMenu4() {

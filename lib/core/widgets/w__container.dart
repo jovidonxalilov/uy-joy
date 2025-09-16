@@ -69,6 +69,7 @@ class ContainerW extends StatelessWidget {
     this.border,
     super.key,
     this.child,
+    this.margin,
     this.text,
     this.width = double.infinity,
     this.height = 48,
@@ -90,6 +91,7 @@ class ContainerW extends StatelessWidget {
   final double? height;
   final double? radius;
   final VoidCallback? onTap;
+  final EdgeInsetsGeometry? margin;
   final GlobalKey<FormState>? formKey;
 
   @override
@@ -100,6 +102,7 @@ class ContainerW extends StatelessWidget {
       child: Container(
         width: width?.w,
         height: height?.h,
+        margin: margin,
         decoration: BoxDecoration(
           color: color,
           borderRadius: BorderRadius.circular(radius!),

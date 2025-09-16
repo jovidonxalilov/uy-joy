@@ -13,15 +13,23 @@ class PropertyModel {
     required this.limit,
   });
 
-  factory PropertyModel.fromJson(String str) => PropertyModel.fromMap(json.decode(str));
+  // Bu yerda o'zgartirish - Map qabul qiladi
+  factory PropertyModel.fromJson(dynamic json) {
+    if (json is String) {
+      return PropertyModel.fromMap(jsonDecode(json));
+    } else if (json is Map<String, dynamic>) {
+      return PropertyModel.fromMap(json);
+    }
+    throw Exception('Invalid JSON format for PropertyModel');
+  }
 
   String toJson() => json.encode(toMap());
 
   factory PropertyModel.fromMap(Map<String, dynamic> json) => PropertyModel(
     data: List<Datum>.from(json["data"].map((x) => Datum.fromMap(x))),
-    total: json["total"],
-    page: json["page"],
-    limit: json["limit"],
+    total: json["total"] ?? 0,
+    page: json["page"] ?? 0,
+    limit: json["limit"] ?? 10,
   );
 
   Map<String, dynamic> toMap() => {
@@ -98,34 +106,48 @@ class Datum {
   String toJson() => json.encode(toMap());
 
   factory Datum.fromMap(Map<String, dynamic> json) => Datum(
-    id: json["id"],
-    typeOfSale: json["typeOfSale"],
-    buildingType: json["buildingType"],
-    title: json["title"],
-    description: json["description"],
-    numberOfRooms: json["NumberOfRooms"],
-    numberOfBathrooms: json["NumberOfBathrooms"],
-    area: json["Area"],
-    floor: json["floor"],
-    totalFloors: json["totalFloors"],
-    furnishing: json["furnishing"],
-    latitude: json["latitude"],
-    longitude: json["longitude"],
-    location: json["location"],
-    locatedNear: List<String>.from(json["locatedNear"].map((x) => x)),
-    isVip: json["isVip"],
+    id: json["id"] ?? "",
+    typeOfSale: json["typeOfSale"] ?? "",
+    buildingType: json["buildingType"] ?? "",
+    title: json["title"] ?? "",
+    description: json["description"] ?? "",
+    numberOfRooms: json["NumberOfRooms"] ?? "",
+    numberOfBathrooms: json["NumberOfBathrooms"] ?? 0,
+    area: json["Area"] ?? 0,
+    floor: json["floor"] ?? 0,
+    totalFloors: json["totalFloors"] ?? 0,
+    furnishing: json["furnishing"] ?? "",
+    latitude: json["latitude"] ?? 0,
+    longitude: json["longitude"] ?? 0,
+    location: json["location"] ?? "",
+    // locatedNear xavfsiz parsing
+    locatedNear: json["locatedNear"] != null
+        ? List<String>.from(json["locatedNear"].map((x) => x.toString()))
+        : [],
+    isVip: json["isVip"] ?? false,
     youtubeLink: json["youtubeLink"],
-    isVerified: json["isVerified"],
-    rentalFrequency: json["rentalFrequency"],
-    currency: json["currency"],
-    price: json["price"],
-    photos: List<Photos>.from(json["photos"]),
-    ownerId: json["ownerId"],
-    isPaid: json["isPaid"],
-    freeListingUsed: json["freeListingUsed"],
-    createdAt: DateTime.parse(json["createdAt"]),
-    updatedAt: DateTime.parse(json["updatedAt"]),
-    user: User.fromMap(json["user"]),
+    isVerified: json["isVerified"] ?? false,
+    rentalFrequency: json["rentalFrequency"] ?? "",
+    currency: json["currency"] ?? "",
+    price: json["price"] ?? 0,
+    // Photos xavfsiz parsing
+    photos: json["photos"] != null
+        ? List<Photos>.from(
+            json["photos"].map(
+              (x) => x is String ? Photos(photo: x) : Photos.fromJson(x),
+            ),
+          )
+        : [],
+    ownerId: json["ownerId"] ?? "",
+    isPaid: json["isPaid"] ?? false,
+    freeListingUsed: json["freeListingUsed"] ?? false,
+    createdAt: json["createdAt"] != null
+        ? DateTime.parse(json["createdAt"])
+        : DateTime.now(),
+    updatedAt: json["updatedAt"] != null
+        ? DateTime.parse(json["updatedAt"])
+        : DateTime.now(),
+    user: User.fromMap(json["user"] ?? {}),
   );
 
   Map<String, dynamic> toMap() => {
@@ -150,7 +172,7 @@ class Datum {
     "rentalFrequency": rentalFrequency,
     "currency": currency,
     "price": price,
-    "photos": List<dynamic>.from(photos),
+    "photos": List<dynamic>.from(photos.map((x) => x.toMap())),
     "ownerId": ownerId,
     "isPaid": isPaid,
     "freeListingUsed": freeListingUsed,
@@ -160,17 +182,24 @@ class Datum {
   };
 }
 
+// Tuzatilgan Photos klasi
 class Photos {
   final String photo;
+
   Photos({required this.photo});
 
-
-  factory Photos.fromJson(Map<String, dynamic> json)  {
-    return Photos(photo: json["photos"]);
+  // Bu yerda field nomi "photos" emas, "photo" bo'lishi kerak
+  factory Photos.fromJson(dynamic json) {
+    if (json is String) {
+      return Photos(photo: json);
+    } else if (json is Map<String, dynamic>) {
+      return Photos(photo: json["photo"] ?? "");
+    }
+    return Photos(photo: json.toString());
   }
+
+  Map<String, dynamic> toMap() => {"photo": photo};
 }
-
-
 
 class User {
   final String id;
@@ -190,10 +219,10 @@ class User {
   String toJson() => json.encode(toMap());
 
   factory User.fromMap(Map<String, dynamic> json) => User(
-    id: json["id"],
-    name: json["name"],
-    email: json["email"],
-    image: json["image"],
+    id: json["id"] ?? "",
+    name: json["name"] ?? "",
+    email: json["email"] ?? "",
+    image: json["image"] ?? "",
   );
 
   Map<String, dynamic> toMap() => {
@@ -202,16 +231,4 @@ class User {
     "email": email,
     "image": image,
   };
-}
-
-class EnumValues<T> {
-  Map<String, T> map;
-  late Map<T, String> reverseMap;
-
-  EnumValues(this.map);
-
-  Map<T, String> get reverse {
-    reverseMap = map.map((k, v) => MapEntry(v, k));
-    return reverseMap;
-  }
 }

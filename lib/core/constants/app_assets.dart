@@ -52,12 +52,20 @@ class AppAssets {
   static const String sqft = '${_svg}sqft.svg';
   static const String list = '${_svg}list.svg';
   static const String grid = '${_svg}grid.svg';
-  static const String gallery = '${_svg}grid.svg';
+  static const String gallery = '${_svg}gallery.svg';
   static const String bedroom = '${_svg}bedroom.svg';
+  static const String flash = '${_svg}flash_on.svg';
+  // static const String bedroom = '${_svg}bedroom.svg';
+  // static const String bedroom = '${_svg}bedroom.svg';
+  // static const String bedroom = '${_svg}bedroom.svg';
+  // static const String bedroom = '${_svg}bedroom.svg';
+  // static const String bedroom = '${_svg}bedroom.svg';
+  // static const String bedroom = '${_svg}bedroom.svg';
+  // static const String bedroom = '${_svg}bedroom.svg';
   static const String apartment = '${_svg}apartment.svg';
   static const String uzbI = '${_svg}uzb_i.svg';
   static const String eyeOff = '${_svg}eye_off.svg';
-
+  static const String filter = '${_svg}filter.svg';
   // PNG
   static const String logo = '${_png}logo.png';
   static const String logoUi = '${_png}logo_ui.png';
