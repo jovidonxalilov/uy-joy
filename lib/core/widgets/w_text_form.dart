@@ -170,7 +170,7 @@ class WTextField extends StatefulWidget {
     this.maxLength,
     this.hasClearButton = false,
     this.hasError = false,
-    this.fillColor,
+    this.fillColor = AppColors.white,
     this.borderColor,
     this.cursorColor,
     this.borderRadius = 8,
@@ -390,11 +390,11 @@ class _WTextFieldState extends State<WTextField> {
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(widget.borderRadius),
-              borderSide: BorderSide(color: borderColor),
+              borderSide: BorderSide(color: borderColor, width: 2),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(widget.borderRadius),
-              borderSide: BorderSide(color: borderColor, width: 1.4),
+              borderSide: BorderSide(color: borderColor, width: 2),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(widget.borderRadius),

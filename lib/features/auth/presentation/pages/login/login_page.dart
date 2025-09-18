@@ -97,7 +97,9 @@ class _LoginPageState extends State<LoginPage> {
                               controller: phoneController,
                               hintText: "Enter phone number",
                               autoPrefix998: true,
+                              fillColor: AppColors.white,
                               prefixImage: AppAssets.uzbI,
+                              borderColor: AppColors.lightSky,
                             ),
                             SizedBox(height: 16.h),
                             WTextField(

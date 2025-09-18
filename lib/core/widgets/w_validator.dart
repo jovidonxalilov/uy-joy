@@ -245,18 +245,18 @@ class SimpleValidators {
     return null;
   }
 
-  static String? validateText(String? value, {int minLength = 50}) {
+  static String? validateText(
+      String? value, {
+        int minLength = 50,
+        String errorText = "Matn kamida 10 ta belgidan iborat bo‘lishi kerak",
+      }) {
     final v = value?.trim() ?? '';
     if (v.isEmpty) return 'Matnni kiriting';
 
-    // Faqat harflar bo‘lishini tekshirish (lotin yoki kirill)
-    final regex = RegExp(r'^[a-zA-Zа-яА-ЯёЁ\s]+$');
-    if (!regex.hasMatch(v)) {
-      return 'Faqat harflar va bo‘sh joylarga ruxsat beriladi';
-    }
+    // Har qanday belgiga ruxsat beriladi (hech qanday regex yo‘q)
 
     if (v.length < minLength) {
-      return 'Matn kamida $minLength ta harf bo‘lishi kerak';
+      return errorText;
     }
 
     return null;
@@ -273,6 +273,10 @@ class SimpleValidators {
     }
     return null;
   }
-
+  static String? notEmptyIfFilled(String? value, {String errorText = 'Xato qiymat kiritildi'}) {
+    final v = value?.trim() ?? '';
+    if (v.isEmpty) return errorText;
+    return null;
+  }
 
 }

@@ -55,8 +55,8 @@ class AppAssets {
   static const String gallery = '${_svg}gallery.svg';
   static const String bedroom = '${_svg}bedroom.svg';
   static const String flash = '${_svg}flash_on.svg';
-  // static const String bedroom = '${_svg}bedroom.svg';
-  // static const String bedroom = '${_svg}bedroom.svg';
+  static const String camera = '${_svg}camera.svg';
+  static const String close = '${_svg}close.svg';
   // static const String bedroom = '${_svg}bedroom.svg';
   // static const String bedroom = '${_svg}bedroom.svg';
   // static const String bedroom = '${_svg}bedroom.svg';
@@ -66,6 +66,7 @@ class AppAssets {
   static const String uzbI = '${_svg}uzb_i.svg';
   static const String eyeOff = '${_svg}eye_off.svg';
   static const String filter = '${_svg}filter.svg';
+
   // PNG
   static const String logo = '${_png}logo.png';
   static const String logoUi = '${_png}logo_ui.png';

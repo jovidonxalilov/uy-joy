@@ -16,7 +16,7 @@ import 'package:uyjoy/features/message/presentation/pages/message_page.dart';
 import 'package:uyjoy/features/profile/presentation/pages/profile_page.dart';
 
 final GoRouter router = GoRouter(
-  initialLocation: Routes.login,
+  initialLocation: Routes.add,
   routes: [
     ShellRoute(
 

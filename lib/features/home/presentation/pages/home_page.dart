@@ -255,7 +255,7 @@ class _PropertyGridScreenState extends State<PropertyGridScreen> {
         final property = propertyModel.data[index];
         return _buildPropertyCard(property);
       },
-    ).paddingOnly(top: 15, left: 16, right: 16, bottom: 20);
+    ).paddingOnly(top: 15, left: 16, right: 16, bottom: 0);
   }
 
   Widget _buildListView(PropertyModel propertyModel) {

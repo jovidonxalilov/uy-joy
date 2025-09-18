@@ -19,7 +19,7 @@ class WBottomNavigationBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity.w,
-      height: 60.h,
+      height: 56.h,
       decoration: BoxDecoration(
         border: Border(
           top: BorderSide(
@@ -58,7 +58,7 @@ class WBottomNavigationBar extends StatelessWidget {
             callback: () {onTap(3);},
             svg: AppAssets.chat,
             iconColor: selectedIndex == 3 ? AppColors.base : AppColors.botttomIcon,
-            title: "Chat",
+            title: "Message",
             titleColor: selectedIndex == 3 ? AppColors.base : AppColors.light,
           ),
           BottomNavigationIconButton(
@@ -69,7 +69,7 @@ class WBottomNavigationBar extends StatelessWidget {
             titleColor: selectedIndex == 4 ? AppColors.base : AppColors.light,
           ),
         ],
-      ).paddingOnly(top: 4, left: 22, right: 22, bottom: 0),
+      ).paddingOnly(top: 8, bottom: 0),
     );
   }
 }
